@@ -77,5 +77,6 @@ The MVP will include the following core functionalities:
 Members : 
 [Mahir Patel](https://github.com/MahirPatel2005)
 [Dev Patel](https://github.com/Dev2139)
+[Kalpan Kaneriya](https://github.com/Kalpan2007)
 
 
