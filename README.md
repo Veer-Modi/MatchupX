@@ -71,7 +71,7 @@ The MVP will include the following core functionalities:
    ```bash
    cd backend
    npm install
-   npm start
+   npm run dev
    ```
 
 Members : 
