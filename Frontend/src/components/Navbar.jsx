@@ -8,7 +8,7 @@ const Navbar = () => {
   const navLinks = [
     { to: '/auction', icon: <Gavel className="h-5 w-5" />, text: 'Auction' },
     { to: '/teams', icon: <Users className="h-5 w-5" />, text: 'Teams' },
-    { to: '/schedule', icon: <Calendar className="h-5 w-5" />, text: 'Schedule' },
+    { to: '/matches', icon: <Calendar className="h-5 w-5" />, text: 'Schedule' },
     { to: '/stats', icon: <BarChart2 className="h-5 w-5" />, text: 'Stats' },
   ];
 
