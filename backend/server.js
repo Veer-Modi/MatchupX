@@ -1,29 +1,36 @@
-// Main server file
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
-const tournamentRoutes = require('./routes/tournamentRoutes');
-const auctionRoutes = require('./routes/auctionRoutes');
-const matchRoutes = require('./routes/matchRoutes');
-const scoreboardRoutes = require('./routes/scoreboardRoutes');
-const setupSocket = require('./utils/socket');
-
-dotenv.config();
-connectDB();
+const http = require('http');
+const { Server } = require('socket.io');
+require('dotenv').config();
+const apiRoutes = require('./routes/api');
 
 const app = express();
-app.use(express.json());
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/tournaments', tournamentRoutes);
-app.use('/api/auctions', auctionRoutes);
-app.use('/api/matches', matchRoutes);
-app.use('/api/scoreboard', scoreboardRoutes);
-
-const server = app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server running on port ${process.env.PORT || 5000}`);
+// Middleware to attach io to req object
+app.use((req, res, next) => {
+  req.io = io;
+  next();
 });
 
-setupSocket(server);
+app.use(express.json());
+app.use('/api', apiRoutes);
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${server.address().port}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`Port ${PORT} is in use, trying ${PORT + 1}...`);
+    server.listen(PORT + 1, () => console.log(`Server running on port ${server.address().port}`));
+  }
+});
+
+module.exports = app;
